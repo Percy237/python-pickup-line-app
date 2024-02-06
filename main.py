@@ -44,6 +44,16 @@ def get_next():
         print("There's no current node")
 
 
+# Creating function for a random category
+def get_random_category():
+    line_label.config(text=f"You clicked on {category_combo.get()}")
+
+
+# Creating binding function
+def click_bind(e):
+    line_label.config(text=f"You clicked on {category_combo.get()}")
+
+
 root = tb.Window(themename="darkly")
 root.title("Rizz Like Percy!")
 root.geometry("500x350")
@@ -57,7 +67,6 @@ line_label = tb.Label(line_frame, text="Rizz Like Percy!", font=("Hevelica", 20)
 line_label.pack(pady=30)
 
 # Creating style for my button
-
 my_style = tb.Style()
 my_style.configure("success.TButton", font=("Helvetica", 18))
 
@@ -83,5 +92,25 @@ previous = tb.Button(
 )
 previous.pack(pady=10)
 
+# Creating category options
+categories = ["Funny", "Cheesy", "Flirty", "Complementary", "Romantic", "Clever"]
+
+# Creating Combobox
+category_combo = tb.Combobox(root, bootstyle="success", values=categories)
+category_combo.pack(pady=20)
+
+# Set Combo Default
+category_combo.current(0)
+
+category_button = tb.Button(
+    root,
+    text=f"Get random",
+    command=get_random_category,
+    bootstyle="info",
+)
+category_button.pack(pady=20)
+
+# Bind the combobox
+category_combo.bind("<<ComboboxSelected>>", click_bind)
 
 root.mainloop()
