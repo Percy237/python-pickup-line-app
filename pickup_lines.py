@@ -6,7 +6,7 @@ def main():
     print(f"Random : {get_random_pickup_line()}")
     print(f"Funny : {get_random_funny_pickup_line()}")
     print(f"Cheesy : {get_random_cheesy_pickup_line()}")
-    print(f"Complimentary : {get_random_complimentary_pickup_line()}")
+    print(f"Complimentary : {get_random_complementary_pickup_line()}")
     print(f"Romantic : {get_random_romantic_pickup_line()}")
     print(f"Clever : {get_random_clever_pickup_line()}")
     print(f"Flirty : {get_random_flirty_pickup_line()}")
@@ -45,11 +45,11 @@ def get_random_clever_pickup_line():
     return random_clever_pickup_line["text"]
 
 
-def get_random_complimentary_pickup_line():
-    random_complimentary_pickup_line = random.choice(
-        all_pickup_lines_list.all_complimentary_pickup_lines
+def get_random_complementary_pickup_line():
+    random_complementary_pickup_line = random.choice(
+        all_pickup_lines_list.all_complementary_pickup_lines
     )
-    return random_complimentary_pickup_line["text"]
+    return random_complementary_pickup_line["text"]
 
 
 def get_random_romantic_pickup_line():

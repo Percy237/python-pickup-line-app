@@ -2,6 +2,12 @@ from tkinter import *
 from ttkbootstrap.constants import *
 import ttkbootstrap as tb
 from pickup_lines import get_random_pickup_line
+from pickup_lines import get_random_funny_pickup_line
+from pickup_lines import get_random_flirty_pickup_line
+from pickup_lines import get_random_clever_pickup_line
+from pickup_lines import get_random_romantic_pickup_line
+from pickup_lines import get_random_complementary_pickup_line
+from pickup_lines import get_random_cheesy_pickup_line
 from linkedlist import Line
 
 current_node = None
@@ -46,7 +52,18 @@ def get_next():
 
 # Creating function for a random category
 def get_random_category():
-    line_label.config(text=f"You clicked on {category_combo.get()}")
+    if category_combo.get() == "Funny":
+        line_label.config(text=get_random_funny_pickup_line())
+    elif category_combo.get() == "Flirty":
+        line_label.config(text=get_random_flirty_pickup_line())
+    elif category_combo.get() == "Clever":
+        line_label.config(text=get_random_clever_pickup_line())
+    elif category_combo.get() == "Romantic":
+        line_label.config(text=get_random_romantic_pickup_line())
+    elif category_combo.get() == "Complementary":
+        line_label.config(text=get_random_complementary_pickup_line())
+    elif category_combo.get() == "Cheesy":
+        line_label.config(text=get_random_cheesy_pickup_line())
 
 
 # Creating binding function
