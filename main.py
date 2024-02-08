@@ -52,68 +52,106 @@ def get_next():
 
 # Creating function for a random category
 def get_random_category():
-    if category_combo.get() == "Funny":
+    if category_combo.get() == "Funny 😄":
         line_label.config(text=get_random_funny_pickup_line())
-    elif category_combo.get() == "Flirty":
+    elif category_combo.get() == "Flirty 😉":
         line_label.config(text=get_random_flirty_pickup_line())
-    elif category_combo.get() == "Clever":
+    elif category_combo.get() == "Clever 🧠":
         line_label.config(text=get_random_clever_pickup_line())
-    elif category_combo.get() == "Romantic":
+    elif category_combo.get() == "Romantic 💖":
         line_label.config(text=get_random_romantic_pickup_line())
-    elif category_combo.get() == "Complementary":
+    elif category_combo.get() == "Complementary 🥰":
         line_label.config(text=get_random_complementary_pickup_line())
-    elif category_combo.get() == "Cheesy":
+    elif category_combo.get() == "Cheesy 😊":
         line_label.config(text=get_random_cheesy_pickup_line())
 
 
 # Creating binding function
 def click_bind(e):
-    line_label.config(text=f"You clicked on {category_combo.get()}")
+    line_label.config(text=f"You selected {category_combo.get()} category")
+    selected_category = category_combo.get()
+    category_button.config(text=f"Get random {selected_category}")
 
 
 root = tb.Window(themename="darkly")
 root.title("Rizz Like Percy!")
-root.geometry("500x350")
+root.geometry("1000x1000")
 
 # Creating frame for my line
-line_frame = tb.Frame(root, bootstyle="darkly")
-line_frame.pack(pady=40)
+# line_frame = tb.Frame(root, bootstyle="darkly")
+# line_frame.pack(pady=40)
 
 # Create a label
-line_label = tb.Label(line_frame, text="Rizz Like Percy!", font=("Hevelica", 20))
-line_label.pack(pady=30)
+line_label = tb.Label(
+    text="Rizz Like Percy",
+    font=("Comic Sans MS", 20),
+    wraplength=1000,
+)
+line_label.pack(pady=50)
 
 # Creating style for my button
-my_style = tb.Style()
-my_style.configure("success.TButton", font=("Helvetica", 18))
+success_button_style = tb.Style()
+success_button_style.configure("success.TButton", font=("Comic Sans MS", 20))
+
+primary_button_style = tb.Style()
+primary_button_style.configure("primary.TButton", font=("Comic Sans MS", 20))
+
+info_button_style = tb.Style()
+info_button_style.configure("info.TButton", font=("Comic Sans MS", 18))
+
+# Frame for buttons
+navigation_frame = tb.Frame(root)
+navigation_frame.pack(pady=20)
+
+
+# Previous button
+previous = tb.Button(
+    navigation_frame,
+    text="Previous",
+    bootstyle="primary",
+    command=get_previous,
+    width=10,
+)
+previous.pack(pady=20, padx=10, side=LEFT)
 
 # Create a button
 random_button = tb.Button(
-    text="Get a random one",
+    navigation_frame,
+    text="Get a random line",
     bootstyle="primary, outline",
     command=get_random,
-    style="my.TButton",
+    style="success.TButton",
+    width=15,
 )
-random_button.pack(pady=50)
+random_button.pack(pady=20, padx=10, side=LEFT)
 
+# Next button
 next = tb.Button(
+    navigation_frame,
     text="Next",
     bootstyle="primary, outline",
     command=get_next,
+    style="primary.TButton",
+    width=10,
 )
-next.pack(pady=10)
-previous = tb.Button(
-    text="Previous",
-    bootstyle="primary, outline",
-    command=get_previous,
-)
-previous.pack(pady=10)
+next.pack(pady=20, padx=10, side=LEFT)
+
 
 # Creating category options
-categories = ["Funny", "Cheesy", "Flirty", "Complementary", "Romantic", "Clever"]
+categories = [
+    "Funny 😄",
+    "Cheesy 😊",
+    "Flirty 😉",
+    "Complementary 🥰",
+    "Romantic 💖",
+    "Clever 🧠",
+]
+
 
 # Creating Combobox
-category_combo = tb.Combobox(root, bootstyle="success", values=categories)
+category_combo = tb.Combobox(
+    root, bootstyle="success", values=categories, font=("Helvetica", 18)
+)
 category_combo.pack(pady=20)
 
 # Set Combo Default
@@ -121,9 +159,10 @@ category_combo.current(0)
 
 category_button = tb.Button(
     root,
-    text=f"Get random",
+    text=f"Get random {category_combo.get()}",
     command=get_random_category,
     bootstyle="info",
+    style="info.TButton",
 )
 category_button.pack(pady=20)
 
