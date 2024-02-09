@@ -9,11 +9,27 @@ from pickup_lines import get_random_romantic_pickup_line
 from pickup_lines import get_random_complementary_pickup_line
 from pickup_lines import get_random_cheesy_pickup_line
 from linkedlist import Line
+import sqlite3
+import string
+import random
+import datetime
 
-current_node = None
+
+root = tb.Window(themename="darkly")
+root.title("Rizz Like Percy!")
+root.geometry("1000x700")
+
+my_notebook = tb.Notebook(root, bootstyle="dark")
+my_notebook.pack(pady=20)
+
+main_tab = tb.Frame(my_notebook)
+register_tab = tb.Frame(my_notebook)
 
 
 # Create a function to get random pickup line
+current_node = None
+
+
 def get_random():
     global current_node
     line = get_random_pickup_line()
@@ -73,17 +89,14 @@ def click_bind(e):
     category_button.config(text=f"Get random {selected_category}")
 
 
-root = tb.Window(themename="darkly")
-root.title("Rizz Like Percy!")
-root.geometry("1000x1000")
-
 # Creating frame for my line
 # line_frame = tb.Frame(root, bootstyle="darkly")
 # line_frame.pack(pady=40)
 
 # Create a label
 line_label = tb.Label(
-    text="Rizz Like Percy",
+    main_tab,
+    text="Rizz Like Percy 🤙😎",
     font=("Comic Sans MS", 20),
     wraplength=1000,
 )
@@ -100,7 +113,7 @@ info_button_style = tb.Style()
 info_button_style.configure("info.TButton", font=("Comic Sans MS", 18))
 
 # Frame for buttons
-navigation_frame = tb.Frame(root)
+navigation_frame = tb.Frame(main_tab)
 navigation_frame.pack(pady=20)
 
 
@@ -150,7 +163,7 @@ categories = [
 
 # Creating Combobox
 category_combo = tb.Combobox(
-    root, bootstyle="success", values=categories, font=("Helvetica", 18)
+    main_tab, bootstyle="success", values=categories, font=("Helvetica", 18)
 )
 category_combo.pack(pady=20)
 
@@ -158,7 +171,7 @@ category_combo.pack(pady=20)
 category_combo.current(0)
 
 category_button = tb.Button(
-    root,
+    main_tab,
     text=f"Get random {category_combo.get()}",
     command=get_random_category,
     bootstyle="info",
@@ -168,5 +181,111 @@ category_button.pack(pady=20)
 
 # Bind the combobox
 category_combo.bind("<<ComboboxSelected>>", click_bind)
+
+my_label2 = Label(
+    register_tab,
+    text="You got a line in mind? Drop it below 🤙",
+    font=("Helvetica", 20),
+)
+my_label2.pack(pady=20)
+
+my_notebook.add(main_tab, text="Main")
+my_notebook.add(register_tab, text="Enter Line")
+
+# Creating Entry for language
+language_label = Label(register_tab, text="Enter Language:", font=("Helvetica", 16))
+language_label.pack(pady=20)
+language_entry = tb.Entry(register_tab)
+language_entry.pack(pady=20)
+
+# Creating Entry for category
+entry_categories = [
+    "Funny 😄",
+    "Cheesy 😊",
+    "Flirty 😉",
+    "Complementary 🥰",
+    "Romantic 💖",
+    "Clever 🧠",
+]
+
+category_label = Label(register_tab, text="Select Category", font=("Helvetica", 16))
+category_label.pack(pady=10)
+
+entry_category_combo = tb.Combobox(
+    register_tab, bootstyle="success", values=entry_categories, font=("Helvetica", 18)
+)
+entry_category_combo.pack(pady=10)
+
+
+# Creating Entry for line
+entry_line_label = Label(register_tab, text="Enter Line", font=("Helvetica", 16))
+entry_line_label.pack(pady=10)
+line_entry = tb.Entry(register_tab)
+line_entry.pack(pady=10)
+
+
+def generate_random_string(length=24):
+    hex_characters = string.hexdigits[
+        :-6
+    ]  # Only take the hex characters without 'abcdef'
+    return "".join(random.choice(hex_characters) for _ in range(length))
+
+
+# Generate the current date and time as a string
+current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+
+# function to save pickup_line
+def save_line():
+    random_string = generate_random_string()
+    language = language_entry.get()
+    print(language.capitalize())
+    category = entry_category_combo.get()[:-2]
+    print(category)
+    line = line_entry.get()
+    print(line)
+
+    # Connection to db
+    conn = sqlite3.connect("db.sqlite3")
+    cursor = conn.cursor()
+
+    language_query = "SELECT id FROM language WHERE language = ?"
+    language_id = cursor.execute(language_query, (language,)).fetchone()
+    if language_id is None:
+        cursor.execute("INSERT INTO language(language) VALUES (?)", (language,))
+        language_id = cursor.lastrowid
+    else:
+        language_id = language_id[0]
+
+    category_query = "SELECT id FROM language WHERE language = ?"
+    category_id = cursor.execute(category_query, (category,)).fetchone()
+    if category_id is None:
+        cursor.execute("INSERT INTO category(category) VALUES (?)", (category,))
+        category_id = cursor.lastrowid
+    else:
+        category_id = category_id[0]
+
+    cursor.execute(
+        """
+                INSERT INTO pickup_line(id, text, category_id, language_id, dateCreated)
+                VALUES (?, ?, ?, ?, ?)
+            """,
+        (
+            random_string,
+            line,
+            category_id,
+            language_id,
+            current_datetime,
+        ),
+    )
+
+    conn.commit()
+    conn.close()
+
+
+# Submit button
+submit_button = tb.Button(register_tab, text="Submit", command=save_line)
+submit_button.pack(pady=10)
+
 
 root.mainloop()
