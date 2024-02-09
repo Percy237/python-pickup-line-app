@@ -13,6 +13,7 @@ import sqlite3
 import string
 import random
 import datetime
+from ttkbootstrap.dialogs import Messagebox
 
 
 root = tb.Window(themename="darkly")
@@ -192,10 +193,11 @@ my_label2.pack(pady=20)
 my_notebook.add(main_tab, text="Main")
 my_notebook.add(register_tab, text="Enter Line")
 
+
 # Creating Entry for language
 language_label = Label(register_tab, text="Enter Language:", font=("Helvetica", 16))
 language_label.pack(pady=20)
-language_entry = tb.Entry(register_tab)
+language_entry = tb.Entry(register_tab, font=("Helvetica", 20))
 language_entry.pack(pady=20)
 
 # Creating Entry for category
@@ -220,10 +222,11 @@ entry_category_combo.pack(pady=10)
 # Creating Entry for line
 entry_line_label = Label(register_tab, text="Enter Line", font=("Helvetica", 16))
 entry_line_label.pack(pady=10)
-line_entry = tb.Entry(register_tab)
+line_entry = tb.Entry(register_tab, font=("Helvetica", 22))
 line_entry.pack(pady=10)
 
 
+# Function to generate random pickup line
 def generate_random_string(length=24):
     hex_characters = string.hexdigits[
         :-6
@@ -235,15 +238,29 @@ def generate_random_string(length=24):
 current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
+def show_error():
+    mb = Messagebox.show_error("Language, Category, line cannot be empty")
+
+
+def show_success():
+    mb = Messagebox.ok("Your line has been saved 😉")
+
+
 # function to save pickup_line
 def save_line():
     random_string = generate_random_string()
     language = language_entry.get()
     print(language.capitalize())
-    category = entry_category_combo.get()[:-2]
+    category = entry_category_combo.get()[:-2]  # remove the emoji
     print(category)
     line = line_entry.get()
     print(line)
+
+    # Check if any of the required fields are empty
+    if not language or not category or not line:
+        print("Language, category, and line cannot be empty")
+        show_error()
+        return
 
     # Connection to db
     conn = sqlite3.connect("db.sqlite3")
@@ -278,13 +295,15 @@ def save_line():
             current_datetime,
         ),
     )
-
+    show_success()
     conn.commit()
     conn.close()
 
 
 # Submit button
-submit_button = tb.Button(register_tab, text="Submit", command=save_line)
+submit_button = tb.Button(
+    register_tab, text="Submit", command=save_line, style="info.TButton"
+)
 submit_button.pack(pady=10)
 
 
